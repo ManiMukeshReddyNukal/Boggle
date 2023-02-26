@@ -10,13 +10,9 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import com.thebyte.boggle.R
+import androidx.fragment.app.activityViewModels
 
 class Fragment1 : Fragment() {
-
-    companion object {
-        fun newInstance() = Fragment1()
-    }
-
     private lateinit var viewModel: MainViewModel
     private lateinit var button1: Button
     private lateinit var button2: Button
@@ -36,10 +32,12 @@ class Fragment1 : Fragment() {
     private lateinit var button16: Button
     private lateinit var clearButton: Button
     private lateinit var submitButton: Button
+    private val sharedViewModel: SharedViewModel by activityViewModels()
+
     private var lastButton: Int = -1
     private var curText: String = ""
-    private var posToChar = arrayOf("S","T","N","G","E","I","A","E","D","R","L","S","S","E","P","O")
     private var alreadyClicked: MutableList<Int> = mutableListOf()
+    private var posToChar = arrayOf("S","T","N","G","E","I","A","E","D","R","L","S","S","E","P","O")
 
     private fun ifValidButtonPress(butNum: Int, lastBut: Int): Boolean{
         if (lastBut == -1) return true
@@ -76,7 +74,7 @@ class Fragment1 : Fragment() {
         }
     }
 
-    private fun handleClearButton(view: View){
+    private fun handleClearButton(){
         lastButton = -1
         curText = ""
         alreadyClicked = mutableListOf()
@@ -100,9 +98,31 @@ class Fragment1 : Fragment() {
         (requireView().findViewById<View>(R.id.button16) as Button).setBackgroundColor(0xFF7CFC00.toInt())
     }
 
+    private fun createNewGrid(){
+        val allowedChars = ('a'..'z')+'a'+'e'+'i'+'o'+'u'+'a'+'e'+'i'+'o'+'u'+'a'+'e'+'i'+'o'+'u'+'a'+'e'+'i'+'o'+'u'+'s'+'z'+'p'+'x'+'q'
+        posToChar = (1 .. 16).map{allowedChars.random().toString().uppercase()}.toTypedArray()
+
+        button1.text = posToChar[1-1]
+        button2.text = posToChar[2-1]
+        button3.text = posToChar[3-1]
+        button4.text = posToChar[4-1]
+        button5.text = posToChar[5-1]
+        button6.text = posToChar[6-1]
+        button7.text = posToChar[7-1]
+        button8.text = posToChar[8-1]
+        button9.text = posToChar[9-1]
+        button10.text = posToChar[10-1]
+        button11.text = posToChar[11-1]
+        button12.text = posToChar[12-1]
+        button13.text = posToChar[13-1]
+        button14.text = posToChar[14-1]
+        button15.text = posToChar[15-1]
+        button16.text = posToChar[16-1]
+    }
+
      override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         // TODO: Use the ViewModel
     }
 
@@ -125,6 +145,7 @@ class Fragment1 : Fragment() {
         button14 = requireView().findViewById(R.id.button14)
         button15 = requireView().findViewById(R.id.button15)
         button16 = requireView().findViewById(R.id.button16)
+        submitButton = requireActivity().findViewById(R.id.submit)
 
         button1.setOnClickListener { handleTextButtons(button1) }
         button2.setOnClickListener { handleTextButtons(button2) }
@@ -143,8 +164,21 @@ class Fragment1 : Fragment() {
         button15.setOnClickListener { handleTextButtons(button15) }
         button16.setOnClickListener { handleTextButtons(button16) }
 
+        createNewGrid()
+
         clearButton = requireView().findViewById(R.id.clear)
-        clearButton.setOnClickListener { handleClearButton(clearButton) }
+        clearButton.setOnClickListener { handleClearButton() }
+
+        sharedViewModel.newGameClick.observe(viewLifecycleOwner) {
+            handleClearButton()
+            createNewGrid()
+        }
+
+        submitButton.setOnClickListener {
+            val textView: TextView = requireView().findViewById<View>(R.id.current_word) as TextView
+            sharedViewModel.typedText.value = (textView.text as String?)?.lowercase()
+            handleClearButton()
+        }
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {

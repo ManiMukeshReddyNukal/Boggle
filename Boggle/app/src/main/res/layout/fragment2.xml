@@ -19,6 +19,7 @@
         app:layout_constraintWidth_percent="0.4" />
 
     <Button
+        android:id="@+id/new_game_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -26,7 +27,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/current_word"
+        app:layout_constraintStart_toEndOf="@+id/score_text"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.4" />
 
