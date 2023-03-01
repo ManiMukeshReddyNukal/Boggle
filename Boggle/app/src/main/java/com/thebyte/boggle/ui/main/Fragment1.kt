@@ -39,7 +39,7 @@ class Fragment1 : Fragment() {
     private var alreadyClicked: MutableList<Int> = mutableListOf()
     private var posToChar = arrayOf("S","T","N","G","E","I","A","E","D","R","L","S","S","E","P","O")
 
-    private fun ifValidButtonPress(butNum: Int, lastBut: Int): Boolean{
+    fun ifValidButtonPress(butNum: Int, lastBut: Int): Boolean{
         if (lastBut == -1) return true
         val possibilities: MutableList<Int> = mutableListOf()
         possibilities.addAll(listOf(lastBut-4, lastBut+4))
